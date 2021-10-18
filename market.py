@@ -9,6 +9,7 @@ db = SQLAlchemy(app)
 
 
 class Item(db.Model):
+    __tablename__ = 'item'
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(length=30), nullable=False, unique=True)
     price = db.Column(db.Integer(), nullable=False)
@@ -17,11 +18,15 @@ class Item(db.Model):
 
 
 class User(db.Model):
+    __tablename__ = 'user'
     id = db.Column(db.Integer(), primary_key=True)
     firstname = db.Column(db.String(length=30), nullable=False)
     lastname = db.Column(db.String(length=30), nullable=False)
     email = db.Column(db.String(length=50), nullable=False)
     password = db.Column(db.String(length=30), nullable=False)
+    userItem = db.Column(db.Integer, db.ForeignKey('item.id'))
+
+
 
 
 @app.route('/')
