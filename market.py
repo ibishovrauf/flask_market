@@ -1,11 +1,19 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, request
-from sqlalchemy import create_engine
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
+
+
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost/hhhhh'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:passmysql@localhost/market'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.secret_key = "test123test"
+
 db = SQLAlchemy(app)
+admin = Admin(app)
+
+
 
 
 class Item(db.Model):
@@ -24,8 +32,9 @@ class User(db.Model):
     lastname = db.Column(db.String(length=30), nullable=False)
     email = db.Column(db.String(length=50), nullable=False)
     password = db.Column(db.String(length=30), nullable=False)
-    userItem = db.Column(db.Integer, db.ForeignKey('item.id'))
 
+admin.add_view(ModelView(User, db.session))
+admin.add_view(ModelView(Item, db.session))
 
 
 
@@ -55,7 +64,7 @@ def sign_up():
         return render_template('register.html')
 
 
-
 if __name__ == "__main__":
+    db.create_all()
     app.run(debug=True)
 
