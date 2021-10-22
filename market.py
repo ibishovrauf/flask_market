@@ -20,17 +20,6 @@ admin = Admin(app)
 Base = declarative_base()
 
 
-class Parent(Base):
-    __tablename__ = 'parent'
-    id = db.Column(db.Integer, primary_key=True)
-    child_id = db.Column(db.Integer, ForeignKey('child.id'))
-    child = relationship("Child", back_populates="parents")
-
-
-class Child(Base):
-    __tablename__ = 'child'
-    id = db.Column(db.Integer, primary_key=True)
-    parents = relationship("Parent", back_populates="child")
 
 class Item(db.Model):
     __tablename__ = 'item'
