@@ -29,6 +29,14 @@
       </div>
     </div>
     <div class="col-6"style="margin: auto;">
+      <label for="username" class="form-label">I am:</label>
+      <select class="form-select" title="thing" id="myselect" name="thing" required>
+        <option value="Client" name="Client" id="Client" {% if thing =="Client" %} selected {% endif %}>Client</option>
+        <option value="Seller" name="Seller" id="Seller" {% if thing =="Seller" %} selected {% endif %}>Seller</option>
+      </select>
+    </div>
+    <br />
+    <div class="col-6"style="margin: auto;">
       <label for="floatingPassword">Password</label>
       <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password">
     </div>
