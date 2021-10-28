@@ -134,7 +134,7 @@ def login_gh():
             login_user(user, remember=True)
             return redirect(url_for('profile'))
         else:
-                flash('Incorrect password, try again.', category='error')
+            flash('Incorrect password, try again.', category='error')
     else:
         flash('Email does not exist.', category='error')
 
@@ -155,6 +155,12 @@ def profile():
 def logout():
     logout_user()
     return redirect(url_for('home_page'))
+
+
+@app.route('/items/<item_id>')
+def show_item(item_id):
+    item = Item.query.filter_by(id=item_id).first()
+    return render_template('item.html', item=item)
 
 
 if __name__ == "__main__":
