@@ -1,6 +1,7 @@
 import os
 
 from flask_login import UserMixin, login_user, current_user, login_required, LoginManager, logout_user
+from flask_paginate import Pagination, get_page_parameter
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, request, redirect, flash, url_for
 from flask_admin import Admin
@@ -70,14 +71,14 @@ admin.add_view(ModelView(Basket, db.session))
 @app.route('/')
 @app.route('/home')
 def home_page():
-    items = Item.query.all()
-    return render_template('home.html', items=items)
+    return render_template('home.html')
 
 
-@app.route('/about', defaults={"item": Item.name})
-@app.route('/about/<item>')
-def about_item(item):
-    return render_template("about.html", item=item)
+@app.route('/items')
+def all_items():
+    page = request.args.get('page', 1, type=int)
+    items = Item.query.paginate(page=page, per_page=3)
+    return render_template('items_page.html', items=items)
 
 
 @app.route('/sign-up', methods=['POST'])
@@ -160,6 +161,7 @@ def logout():
 @app.route('/items/<item_id>')
 def show_item(item_id):
     item = Item.query.filter_by(id=item_id).first()
+
     return render_template('item.html', item=item)
 
 
