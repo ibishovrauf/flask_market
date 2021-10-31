@@ -26,18 +26,25 @@
                </li>
            </ul>
            <ul class="navbar-nav">
+               {% if current_user.is_authenticated == false %}
                <li class="nav-item">
                    <a class="nav-link" href="{{ url_for('login') }}">Login</a>
                </li>
                <li class="nav-item">
                    <a class="nav-link" href="{{ url_for('sign_up') }}">Register</a>
                </li>
+               {% else %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('profile') }}">
                         <div  style="width: 20px;background: #f0f0f0;border-radius: 50%;">.</div>
-                        <circle></circle>
                     </a>
                 </li>
+               <li>
+                   <a href="{{ url_for('basket') }}" class="nav-link">
+                       <div>User cart</div>
+                   </a>
+               </li>
+               {% endif %}
            </ul>
          </div>
       </nav>
