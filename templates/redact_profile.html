@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Redact profile{% endblock %}
+{% block content %}
+
+<form class="text-center" action="#" method="POST" enctype="multipart/form-data">
+    <h1 class="h3 mb-3 fw-normal">Redact profile</h1>
+    <div class="col-6" style="margin: auto;">
+      <label for="firstName" class="form-label">First name</label>
+      <input type="text" name="firstname" class="form-control" id="firstName" placeholder="" value="{{ user.firstname }}" required="">
+      <div class="invalid-feedback">
+        Valid first name is required.
+      </div>
+    </div>
+    <div class="col-6" style="margin: auto;">
+      <label for="LastName">Last name</label>
+      <input type="text" name="lastname" class="form-control" id="LastName" placeholder="" value="{{ user.lastname }}" required="">
+      <div class="invalid-feedback">
+        Valid first name is required.
+      </div>
+    </div>
+    <div class="col-6" style="margin: auto;">
+      <label for="LastName">Username</label>
+      <input type="text" name="username" class="form-control" id="username" placeholder="Username" value="{{ user.username }}" required="">
+      <div class="invalid-feedback">
+        Valid first name is required.
+      </div>
+    </div>
+    <div class="form-group">
+            <label for="exampleFormControlFile1">Example file input</label>
+            <input name="file" type="file" class="form-control-file" id="exampleFormControlFile1">
+    </div>
+    <button class="w-30 btn btn-lg btn-primary" type="submit">Redact</button>
+</form>
+
+{% endblock %}

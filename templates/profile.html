@@ -4,11 +4,14 @@
 {% block content %}
 <div class="row text-center">
     <div class="col-lg-12">
-        <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 140x140" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#777"></rect><text x="50%" y="50%" fill="#777" dy=".3em">140x140</text></svg>
+<!--        <svg class="bd-placeholder-img rounded-circle"  xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 140x140" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#777"></rect><text x="50%" y="50%" fill="#777" dy=".3em">140x140</text></svg>-->
+        <img src="{{ user.photo }}" width="140" height="140" alt="">
         <h2>{{ user.firstname }}  {{ user.lastname }}</h2>
         <p>Some representative placeholder content for the three columns of text below the carousel. This is the first column.</p>
         <p><a class="btn btn-secondary" href="{{ url_for('logout') }}">logout »</a></p>
         <p><a class="btn btn-secondary" href="{{ url_for('add_item') }}">Add Item</a></p>
+        <p><a class="btn btn-secondary" href="{{ url_for('my_items') }}">My items</a></p>
+        <p><a class="btn btn-secondary" href="{{ url_for('redact_profile') }}">Redact profile</a></p>
     </div>
 </div>
 {% endblock %}

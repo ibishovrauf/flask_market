@@ -177,10 +177,10 @@ def all_items():
 @app.route('/items', methods=['POST'])
 def show_item_post():
     if current_user.is_authenticated:
-
         item = request.form['item']
         item = Item.query.filter_by(id=item).first()
         user_cart = Basket.query.filter_by(basket_user_id=current_user.id).first()
+        item_is_exist = 0
         for it in user_cart.items:
             if it == item:
                 item_is_exist = 1
@@ -198,12 +198,13 @@ def show_item_post():
         return redirect(url_for('login'))
 
 
-@app.route('/add_item', methods=['POST'])
+@app.route('/profile/add_item', methods=['POST'])
 def add_item():
     itemname = request.form['ItemName']
     price = request.form['Price']
     barcode = request.form['Barcode']
     description = request.form['Description']
+
     file = request.files['file']
     upload_result = cloudinary.uploader.upload(file)
     photo_url = upload_result["secure_url"]
@@ -223,7 +224,7 @@ def add_item():
     return render_template("add_item.html")
 
 
-@app.route('/add_item', methods=['GET'])
+@app.route('/profile/add_item', methods=['GET'])
 def add_item_get():
     return render_template("add_item.html")
 
@@ -232,7 +233,10 @@ def add_item_get():
 def basket():
     user_cart = Basket.query.filter_by(basket_user_id=current_user.id).first()
     item = user_cart.items
-    return render_template("basket.html", item=item)
+    total_price = 0
+    for items in item:
+        total_price += items.price
+    return render_template("basket.html", item=item, price=total_price)
 
 
 @app.route('/basket', methods=['POST'])
@@ -244,6 +248,40 @@ def basket_delete():
     db.session.commit()
     user_cart = Basket.query.filter_by(basket_user_id=current_user.id).first()
     return render_template("basket.html", item=user_cart.items)
+
+
+@app.route('/profile/redact-profile', methods=["GET"])
+def redact_profile():
+    return render_template('redact_profile.html', user=current_user)
+
+@app.route('/profile/redact-profile', methods=['POST'])
+def redact_profile_post():
+
+    first_name = request.form['firstname']
+    lastname = request.form['lastname']
+    username = request.form['username']
+
+    file = request.files['file']
+    upload_result = cloudinary.uploader.upload(file)
+    photo_url = upload_result["secure_url"]
+
+    if first_name != current_user.firstname:
+        current_user.firstname = first_name
+    if lastname != current_user.lastname:
+        current_user.lastname = lastname
+    if username != current_user.username:
+        current_user.username = username
+    if file:
+        current_user.photo = photo_url
+    db.session.commit()
+    return redirect(url_for('profile'))
+
+
+@app.route('/profile/my-items')
+def my_items():
+    items = Item.query.filter_by(user_id=current_user.id).all()
+    # print(items)
+    return render_template("users_item.html", item=items)
 
 
 if __name__ == "__main__":
