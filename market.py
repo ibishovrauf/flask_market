@@ -1,3 +1,6 @@
+'''
+docstring
+'''
 import cloudinary
 import cloudinary.uploader
 from flask_sqlalchemy import SQLAlchemy
@@ -12,8 +15,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import clodinary_config
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:passmysql@localhost/market'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost/market'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:passmysql@localhost/market'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost/market'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = "test123test"
 login_manager = LoginManager()
@@ -31,12 +34,12 @@ cloudinary.config(
 
 @login_manager.user_loader
 def load_user(user_id):
-    """docstring"""
+    '''docstring'''
     return User.query.get(int(user_id))
 
 
 class Item(db.Model):
-    """docstring"""
+    '''docstring'''
     __tablename__ = 'item'
     id = Column(Integer(), primary_key=True)
     name = Column(String(length=30), nullable=False)
@@ -50,7 +53,7 @@ class Item(db.Model):
 
 
 class User(db.Model, UserMixin):
-    """docstring"""
+    '''docstring'''
     __tablename__ = 'user'
     id = Column(Integer(), primary_key=True)
     firstname = Column(String(length=30), nullable=False)
@@ -64,7 +67,7 @@ class User(db.Model, UserMixin):
 
 
 class Basket(db.Model):
-    """docstring"""
+    '''docstring'''
     __tablename__ = 'basket'
     id = Column(Integer(), primary_key=True)
     basket_user_id = Column(Integer, ForeignKey('user.id'), unique=True)
@@ -73,6 +76,9 @@ class Basket(db.Model):
 
 
 class ItemView(ModelView):
+    '''
+        doc
+    '''
     edit_template = 'edit_item.html'
     create_template = 'create_item.html'
     can_delete = False  # disable model deletion
@@ -81,9 +87,9 @@ class ItemView(ModelView):
 
     @expose('/new/', methods=['POST'])
     def create_view(self):
-        """
+        '''
             Custom create view.
-        """
+        '''
         item_name = request.form['ItemName']
         price = request.form['Price']
         barcode = request.form['Barcode']
@@ -110,16 +116,27 @@ class ItemView(ModelView):
 
     @expose('/new/', methods=['GET'])
     def create_view_get(self):
+        '''
+        doc
+        :return:
+        '''
         return self.render('create_item.html')
 
 
 class UserView(ModelView):
+    '''
+    doc
+    '''
     create_template = "create_user.html"
     page_size = 10  #
     column_exclude_list = ['photo', 'password', ]
 
     @expose('/new/', methods=["POST"])
     def create_app(self):
+        '''
+        doc
+        :return:
+        '''
         enter = request.form.get('admin')
         if enter == "admin":
             admin_o = True
@@ -128,9 +145,6 @@ class UserView(ModelView):
         email = request.form['email']
         password = request.form['password']
         username = request.form['username']
-        rights = request.form.get('thing', '')
-        user = User.query.filter_by(email=email).first()
-        user1 = User.query.filter_by(username=username).first()
         hashed = generate_password_hash(password, method="sha256")
         user = User(firstname=first_name, username=username, lastname=lastname,
                     email=email, admin=admin_o, password=hashed)
@@ -140,12 +154,23 @@ class UserView(ModelView):
 
     @expose('/new/', methods=["GET"])
     def create_new_user_get(self):
+        '''
+        doc
+        :return:
+        '''
         return self.render('create_user.html')
 
 
 class MyAdminIndexView(AdminIndexView):
+    '''
+    doc
+    '''
     def is_accessible(self):
-        if current_user.admin == True:
+        '''
+        doc
+        :return:
+        '''
+        if current_user.admin:
             return current_user.is_authenticated
 
 
@@ -158,19 +183,18 @@ admin.add_view(ModelView(Basket, db.session))
 @app.route('/')
 @app.route('/home')
 def home_page():
-    """docstring"""
+    '''docstring'''
     return render_template('home.html')
 
 
 @app.route('/sign-up', methods=['POST'])
 def sign_up():
-    """docstring"""
+    '''docstring'''
     first_name = request.form['firstname']
     lastname = request.form['lastname']
     email = request.form['email']
     password = request.form['password']
     username = request.form['username']
-    rights = request.form.get('thing', '')
     user = User.query.filter_by(email=email).first()
     user1 = User.query.filter_by(username=username).first()
 
@@ -202,19 +226,19 @@ def sign_up():
 
 @app.route('/sign-up', methods=['GET'])
 def sign_up_get():
-    """docstring"""
+    '''docstring'''
     return render_template('register.html')
 
 
 @app.route('/login', methods=["GET"])
 def login():
-    """docstring"""
+    '''docstring'''
     return render_template('login.html')
 
 
 @app.route('/login', methods=["POST"])
 def login_gh():
-    """docstring"""
+    '''docstring'''
     username = request.form['username']
     password = request.form['password']
     user = User.query.filter_by(username=username).first()
@@ -233,7 +257,7 @@ def login_gh():
 @app.route('/profile')
 @login_required
 def profile():
-    """docstring"""
+    '''docstring'''
     if current_user:
         return render_template('profile.html', user=current_user)
     return render_template(url_for('login'))
@@ -242,14 +266,14 @@ def profile():
 @app.route('/logout')
 @login_required
 def logout():
-    """docstring"""
+    '''docstring'''
     logout_user()
     return redirect(url_for('home_page'))
 
 
 @app.route('/items/<item_id>', methods=['GET'])
 def show_item(item_id):
-    """docstring"""
+    '''docstring'''
     item = Item.query.filter_by(id=item_id).first()
     user_id = item.user_id
     user = User.query.filter_by(id=user_id).first()
@@ -258,7 +282,7 @@ def show_item(item_id):
 
 @app.route('/items', methods=['GET'])
 def all_items():
-    """docstring"""
+    '''docstring'''
     page = request.args.get('page', 1, type=int)
     items = Item.query.paginate(page=page, per_page=6)
     return render_template('items_page.html', items=items)
@@ -266,7 +290,7 @@ def all_items():
 
 @app.route('/items', methods=['POST'])
 def show_item_post():
-    """docstring"""
+    '''docstring'''
     if current_user.is_authenticated:
         item = request.form['item']
         item = Item.query.filter_by(id=item).first()
@@ -290,7 +314,7 @@ def show_item_post():
 
 @app.route('/basket', methods=['GET'])
 def basket():
-    """docstring"""
+    '''docstring'''
     user_cart = Basket.query.filter_by(basket_user_id=current_user.id).first()
     item = user_cart.items
     total_price = 0
@@ -302,7 +326,7 @@ def basket():
 
 @app.route('/basket', methods=['POST'])
 def basket_delete():
-    """docstring"""
+    '''docstring'''
     item = request.form['item']
     item = Item.query.filter_by(id=item).first()
     user_cart = Basket.query.filter_by(basket_user_id=current_user.id).first()
@@ -314,13 +338,13 @@ def basket_delete():
 
 @app.route('/profile/redact-profile', methods=["GET"])
 def redact_profile():
-    """docstring"""
+    '''docstring'''
     return render_template('redact_profile.html', user=current_user)
 
 
 @app.route('/profile/redact-profile', methods=['POST'])
 def redact_profile_post():
-    """docstring"""
+    '''docstring'''
 
     first_name = request.form['firstname']
     lastname = request.form['lastname']
@@ -344,9 +368,8 @@ def redact_profile_post():
 
 @app.route('/profile/my-items')
 def my_items():
-    """docstring"""
+    '''docstring'''
     items = Item.query.filter_by(user_id=current_user.id).all()
-    # print(items)
     return render_template("users_item.html", item=items)
 
 
