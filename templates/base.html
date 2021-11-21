@@ -39,11 +39,13 @@
                         <div  style="width: 20px;background: #f0f0f0;border-radius: 50%;">.</div>
                     </a>
                 </li>
-               <li>
-                   <a href="{{ url_for('basket') }}" class="nav-link">
-                       <div>User cart</div>
-                   </a>
-               </li>
+                {% if current_user.admin == false %}
+                    <li>
+                        <a href="{{ url_for('basket') }}" class="nav-link">
+                            <div>User cart</div>
+                        </a>
+                    </li>
+                {% endif %}
                {% endif %}
            </ul>
          </div>
