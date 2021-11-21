@@ -1,3 +1,6 @@
+"""
+module docstring
+"""
 import cloudinary
 import cloudinary.uploader
 
@@ -13,8 +16,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import clodinary_config
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:passmysql@localhost/market'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost/market'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:passmysql@localhost/market'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost/market'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = "test123test"
 login_manager = LoginManager()
@@ -75,6 +78,9 @@ class Basket(db.Model):
 
 
 class ItemView(ModelView):
+    """
+    docstring
+    """
     edit_template = 'edit_item.html'
     create_template = 'create_item.html'
     can_delete = False  # disable model deletion
@@ -116,12 +122,19 @@ class ItemView(ModelView):
 
 
 class UserView(ModelView):
+    """
+    Class docstring
+    """
     create_template = "create_user.html"
     page_size = 10  #
     column_exclude_list = ['photo', 'password', ]
 
     @expose('/new/', methods=["POST"])
     def create_app(self):
+        """
+        doc
+        :return:
+        """
         enter = request.form.get('admin')
         if enter == "admin":
             admin_o = True
@@ -164,7 +177,7 @@ class UserView(ModelView):
 
 class MyAdminIndexView(AdminIndexView):
     def is_accessible(self):
-        if current_user.admin == True:
+        if current_user.admin :
             return current_user.is_authenticated
 
 
