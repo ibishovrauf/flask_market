@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}{{ item.name }}{% endblock %}
+{% block content %}
+
+<div class="row">
+    <div class="p-4 p-md-5 mb-4 text-white rounded bg-dark">
+        <div class="col-md-6 px-0">
+        <h1 class="display-4 fst-italic">{{ item.name }}</h1>
+        <p class="lead my-3">{{ item.description }}</p>
+        </div>
+    </div>
+</div>
+
+    <div>
+        <h5>Author:</h5>
+        <p>{{ user.firstname }} {{ user.lastname }}</p>
+    </div>
+{% endblock %}
