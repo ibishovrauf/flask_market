@@ -1,29 +1,60 @@
 {% extends "base.html" %}
 {% block title %}items{% endblock %}
 {% block content %}
-<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+<div class="row text-center">
+    <h5>Items page</h5>
+</div>
+<nav class="navbar navbar-light bg-light">
+    <form method="post" action="{{ url_for('my_items_search') }}" class="form-inline">
+        <input class="form-control mr-sm-2" type="search" name='search' placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+    <form method="post" action="{{ url_for('ordered_items') }}">
+        <div class="col-6" style="margin: auto;">
+            <select onchange="this.form.submit()" class="form-select" title="thing" id="myselect" name="thing" required>
+                <option value="up_price" name="up_price" id="up_price" {% if thing =="up_price" %} selected {% endif %}>up_price</option>
+                <option value="name" name="name" id="name" {% if thing =="name" %} selected {% endif %}>name</option>
+                <option value="barcode" name="barcode" id="barcode" {% if thing =="barcode" %} selected {% endif %}>barcode</option>
+            </select>
+    </div>
+   <br />
+    </form>
+</nav>
     {% if item != true %}
-
-    {% for items in item %}
-        <div class="col">
-            <div class="card shadow-sm">
-                <img src="{{ items.photo }}" alt="">
-                <div class="card-body">
-                    <a href="http://127.0.0.1:5000/items/{{ items.id }}">
-                        <p class="card-text">{{ items.name }}</p>
-                    </a>
-                    <p class="card-text">{{ items.description }}</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="btn-group">
-                            <a href="http://127.0.0.1:5000/items/{{ items.id }}"><button type="button" class="btn btn-sm btn-outline-secondary" >View</button></a>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        {% for items in item.items %}
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <img src="{{ items.photo }}" alt="">
+                        <div class="card-body">
+                            <a href="http://127.0.0.1:5000/items/{{ items.id }}">
+                                <p class="card-text">{{ items.name }}</p>
+                            </a>
+                            <p class="card-text">{{ items.description }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <a href="http://127.0.0.1:5000/items/{{ items.id }}"><button type="button" class="btn btn-sm btn-outline-secondary">View</button></a>
+                                </div>
+                                <small class="text-muted">9 mins</small>
+                            </div>
                         </div>
-                        <small class="text-muted">9 mins</small>
                     </div>
                 </div>
-            </div>
+        {% endfor %}
         </div>
-    {% endfor %}
-
+        <div class="row">
+            {% for page_num in item.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2 ) %}
+                {% if page_num %}
+                    {% if item.page  == page_num %}
+                        <a class="btn btn-info mb-4" href="{{ url_for('all_items', page=page_num ) }}">{{ page_num }}</a>
+                    {% else %}
+                        <a class="btn btn-outline-info mb-4" href="{{ url_for('all_items', page=page_num ) }}">{{ page_num }}</a>
+                    {% endif %}
+                {% else %}
+                 ... 
+                {% endif %}
+            {% endfor %}
+        </div>
     {% else %}
     <h5>There is no item</h5>
     {% endif %}
