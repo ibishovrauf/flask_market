@@ -11,12 +11,11 @@ from flask_admin.contrib.sqla import ModelView
 from sqlalchemy import ForeignKey, Integer, Column, String, Boolean
 from sqlalchemy.orm import relationship, backref
 from werkzeug.security import generate_password_hash, check_password_hash
-import simhash
 import clodinary_config
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:passmysql@localhost/market'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost/market'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:passmysql@localhost/market'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost/market'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = "test123test"
 login_manager = LoginManager()
@@ -111,7 +110,7 @@ class ItemView(ModelView):
         barcode_1 = Item.query.filter_by(barcode=barcode).first()
         db.session.add(item)
         db.session.commit()
-        item_search = Item.query.filter_by(barcode=barcode).first()
+#        item_search = Item.query.filter_by(barcode=barcode).first()
 
         if item__name:
             flash('Item is already added', category='error')
@@ -187,7 +186,7 @@ class MyAdminIndexView(AdminIndexView):
         """docstring"""
         if current_user.admin is True:
             return current_user.is_authenticated
-        return
+        return flash("YOU ARE NOT ADMIN", category = 'error')
 
 
 admin = Admin(app, index_view=MyAdminIndexView())
