@@ -140,6 +140,8 @@ class UserView(ModelView):
         enter = request.form.get('admin')
         if enter == "admin":
             admin_o = True
+        else:
+            admin_o = False
         first_name = request.form['firstname']
         lastname = request.form['lastname']
         email = request.form['email']
@@ -161,7 +163,7 @@ class UserView(ModelView):
         else:
             hashed = generate_password_hash(password, method="sha256")
             user = User(firstname=first_name, username=username, lastname=lastname,
-                        email=email, password=hashed)
+                        email=email, admin = admin_o, password=hashed)
             db.session.add(user)
             db.session.commit()
             user_id = user.id
@@ -198,10 +200,6 @@ admin.add_view(BasketView(Basket, db.session))
 @app.route('/home')
 def home_page():
     """docstring"""
-    hash0 = simhash.Simhash("facebook at ufaz")
-    hash1 = simhash.Simhash("facebok at ufaz")
-    hash2 = simhash.Simhash("facəook at ufaz")
-    print(hash0, hash1, hash2)
     return render_template('home.html')
 
 
@@ -213,7 +211,6 @@ def sign_up():
     email = request.form['email']
     password = request.form['password']
     username = request.form['username']
-    # rights = request.form.get('thing', '')
     user = User.query.filter_by(email=email).first()
     user1 = User.query.filter_by(username=username).first()
 
