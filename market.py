@@ -11,7 +11,6 @@ from flask_admin.contrib.sqla import ModelView
 from sqlalchemy import ForeignKey, Integer, Column, String, Boolean
 from sqlalchemy.orm import relationship, backref
 from werkzeug.security import generate_password_hash, check_password_hash
-import clodinary_config
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:passmysql@localhost/market'
@@ -23,10 +22,15 @@ login_manager.login_view = 'login'
 login_manager.init_app(app)
 db = SQLAlchemy(app)
 
+
+cloud_name = "rauf2"
+api_key = "494188146737927"
+api_secret = "73oXW8mcSLuJoxZdWxcaItSM-rY"
+
 cloudinary.config(
-    cloud_name=clodinary_config.cloud_name,
-    api_key=clodinary_config.api_key,
-    api_secret=clodinary_config.api_secret,
+    cloud_name=cloud_name,
+    api_key=api_key,
+    api_secret=api_secret,
 )
 
 
