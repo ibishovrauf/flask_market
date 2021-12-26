@@ -295,6 +295,7 @@ def show_item_post(item_id):
     return redirect(url_for('login'))
 
 @app.route('/basket', methods=['GET'])
+@login_required
 def basket():
     if current_user.admin is True:
         return redirect(url_for('profile'))
