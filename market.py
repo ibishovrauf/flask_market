@@ -1,5 +1,6 @@
 import cloudinary
 import cloudinary.uploader
+from flask_wtf.csrf import CSRFProtect
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import login_user, current_user, login_required, LoginManager, logout_user
 from flask_login import UserMixin
@@ -11,6 +12,7 @@ from sqlalchemy.orm import relationship, backref
 from werkzeug.security import generate_password_hash, check_password_hash
 import clodinary_config
 
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:passmysql@localhost/market'
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost/market'
@@ -20,6 +22,7 @@ login_manager = LoginManager()
 login_manager.login_view = 'login'
 login_manager.init_app(app)
 db = SQLAlchemy(app)
+csrf = CSRFProtect(app)
 
 cloudinary.config(
     cloud_name=clodinary_config.cloud_name,

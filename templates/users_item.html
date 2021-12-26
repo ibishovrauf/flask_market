@@ -6,10 +6,12 @@
 </div>
 <nav class="navbar navbar-light bg-light">
     <form method="post" action="{{ url_for('my_items_search') }}" class="form-inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
         <input class="form-control mr-sm-2" type="search" name='search' placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
     </form>
     <form method="post" action="{{ url_for('ordered_items') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
         <div class="col-6" style="margin: auto;">
             <select onchange="this.form.submit()" class="form-select" title="thing" id="myselect" name="thing" required>
                 <option value="up_price" name="up_price" id="up_price" {% if thing =="up_price" %} selected {% endif %}>up_price</option>

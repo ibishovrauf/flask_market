@@ -13,6 +13,7 @@
             <p class="lead">{{ items.price }}</p>
             <p>
                 <form method="POST" action="">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                     <input name="item" type="text" style="display: none;" value="{{ items.id }}">
                     <input type="submit" class="btn btn-sm btn-outline-secondary" value="Delete to Cart">
                 </form>

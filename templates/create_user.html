@@ -3,6 +3,7 @@
   {% call lib.form_tag(form) %}
     <main class="form-signin text-center">
       <form class="text-center" action="#" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
         <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
         <div class="col-6" style="margin: auto;">
           <label for="firstName" class="form-label">First name</label>
