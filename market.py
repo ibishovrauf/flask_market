@@ -1,7 +1,5 @@
-"""Docstring"""
 import cloudinary
 import cloudinary.uploader
-
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import login_user, current_user, login_required, LoginManager, logout_user
 from flask_login import UserMixin
@@ -32,12 +30,10 @@ cloudinary.config(
 
 @login_manager.user_loader
 def load_user(user_id):
-    """docstring"""
     return User.query.get(int(user_id))
 
 
 class Item(db.Model):
-    """docstring"""
     __tablename__ = 'item'
     __searchable__ = ['name', 'description']
     id = Column(Integer(), primary_key=True)
@@ -52,7 +48,6 @@ class Item(db.Model):
 
 
 class User(db.Model, UserMixin):
-    """docstring"""
     __tablename__ = 'user'
     id = Column(Integer(), primary_key=True)
     firstname = Column(String(length=30), nullable=False)
@@ -66,7 +61,6 @@ class User(db.Model, UserMixin):
 
 
 class Basket(db.Model):
-    """docstring"""
     __tablename__ = 'basket'
     id = Column(Integer(), primary_key=True)
     basket_user_id = Column(Integer, ForeignKey('user.id'), unique=True)
@@ -75,7 +69,6 @@ class Basket(db.Model):
 
 
 class BasketView(ModelView):
-    """docstring"""
     can_delete = False  # disable user  deletion
     can_edit = False  # disable user  edition
     can_create = False  # disable user creation
@@ -83,7 +76,6 @@ class BasketView(ModelView):
 
 
 class ItemView(ModelView):
-    """docstring"""
     edit_template = 'edit_item.html'
     create_template = 'create_item.html'
     can_delete = False  # disable model deletion
@@ -93,10 +85,6 @@ class ItemView(ModelView):
 
     @expose('/new/', methods=['POST'])
     def create_view(self):
-        """
-            Custom create view.
-        """
-
         item_name = request.form['ItemName']
         price = request.form['Price']
         barcode = request.form['Barcode']
@@ -110,7 +98,6 @@ class ItemView(ModelView):
         barcode_1 = Item.query.filter_by(barcode=barcode).first()
         db.session.add(item)
         db.session.commit()
-#        item_search = Item.query.filter_by(barcode=barcode).first()
 
         if item__name:
             flash('Item is already added', category='error')
@@ -123,19 +110,16 @@ class ItemView(ModelView):
 
     @expose('/new/', methods=['GET'])
     def create_view_get(self):
-        """Docstring"""
         return self.render('create_item.html')
 
 
 class UserView(ModelView):
-    """docstring"""
     create_template = "create_user.html"
     page_size = 10
     column_exclude_list = ['photo', 'password', ]
 
     @expose('/new/', methods=["POST"])
     def create_app(self):
-        """docstring"""
         enter = request.form.get('admin')
         if enter == "admin":
             admin_o = True
@@ -176,14 +160,11 @@ class UserView(ModelView):
 
     @expose('/new/', methods=["GET"])
     def create_new_user_get(self):
-        """docstring"""
         return self.render('create_user.html')
 
 
 class MyAdminIndexView(AdminIndexView):
-    """docstring"""
     def is_accessible(self):
-        """docstring"""
         if current_user.admin is True:
             return current_user.is_authenticated
         return flash("YOU ARE NOT ADMIN", category = 'error')
@@ -198,13 +179,11 @@ admin.add_view(BasketView(Basket, db.session))
 @app.route('/')
 @app.route('/home')
 def home_page():
-    """docstring"""
     return render_template('home.html')
 
 
 @app.route('/sign-up', methods=['POST'])
 def sign_up():
-    """docstring"""
     first_name = request.form['firstname']
     lastname = request.form['lastname']
     email = request.form['email']
@@ -241,7 +220,6 @@ def sign_up():
 
 @app.route('/sign-up', methods=['GET'])
 def sign_up_get():
-    """docstring"""
     if current_user.is_authenticated:
         flash("You have already logged in, logout if you want", category="error")
         return redirect(url_for('profile'))
@@ -250,7 +228,6 @@ def sign_up_get():
 
 @app.route('/login', methods=["GET"])
 def login():
-    """docstring"""
     if current_user.is_authenticated:
         flash("You have already logged in, logout if you want", category="error")
         return redirect(url_for('profile'))
@@ -259,7 +236,6 @@ def login():
 
 @app.route('/login', methods=["POST"])
 def login_gh():
-    """docstring"""
     username = request.form['username']
     password = request.form['password']
     user = User.query.filter_by(username=username).first()
@@ -278,7 +254,6 @@ def login_gh():
 @app.route('/profile')
 @login_required
 def profile():
-    """docstring"""
     if current_user.is_authenticated:
         return render_template('profile.html', user=current_user)
     return render_template(url_for('login'))
@@ -287,14 +262,12 @@ def profile():
 @app.route('/logout')
 @login_required
 def logout():
-    """docstring"""
     logout_user()
     return redirect(url_for('home_page'))
 
 
 @app.route('/items/<item_id>', methods=['GET'])
 def show_item(item_id):
-    """docstring"""
     item = Item.query.filter_by(id=item_id).first()
     user_id = item.user_id
     user = User.query.filter_by(id=user_id).first()
@@ -303,7 +276,6 @@ def show_item(item_id):
 
 @app.route('/items/<item_id>', methods=['POST'])
 def show_item_post(item_id):
-    """docstring"""
     if current_user.is_authenticated:
         item = Item.query.filter_by(id=item_id).first()
         user_cart = Basket.query.filter_by(basket_user_id=current_user.id).first()
@@ -325,7 +297,6 @@ def show_item_post(item_id):
 
 @app.route('/basket', methods=['GET'])
 def basket():
-    """docstring"""
     if current_user.admin is True:
         return redirect(url_for('profile'))
     user_cart = Basket.query.filter_by(basket_user_id=current_user.id).first()
@@ -339,7 +310,6 @@ def basket():
 
 @app.route('/basket', methods=['POST'])
 def basket_delete():
-    """docstring"""
     item = request.form['item']
     item = Item.query.filter_by(id=item).first()
     user_cart = Basket.query.filter_by(basket_user_id=current_user.id).first()
@@ -351,13 +321,11 @@ def basket_delete():
 
 @app.route('/profile/redact-profile', methods=["GET"])
 def redact_profile():
-    """docstring"""
     return render_template('redact_profile.html', user=current_user)
 
 
 @app.route('/profile/redact-profile', methods=['POST'])
 def redact_profile_post():
-    """docstring"""
     first_name = request.form['firstname']
     lastname = request.form['lastname']
     username = request.form['username']
@@ -378,7 +346,6 @@ def redact_profile_post():
 
 @app.route('/profile/my-items')
 def my_items():
-    """docstring"""
     if current_user.admin is True:
         page = request.args.get('page', 1, type=int)
         items = Item.query.filter_by(user_id=current_user.id).paginate(page=page, per_page=3)
@@ -389,7 +356,6 @@ def my_items():
 
 @app.route('/my_items/search', methods=['POST'])
 def my_items_search():
-    """docstring"""
     search1 = request.form["search"]
     if not search1:
         search1 = "wrong search"
@@ -399,7 +365,6 @@ def my_items_search():
 
 @app.route('/search/vs', methods=['POST'])
 def search_order_my_items():
-    """docstring"""
     value = request.form.get('thing')
     val = value.split(",")
     return redirect(url_for('my_items_search_results', query=val[1], order=val[0]))
@@ -407,7 +372,6 @@ def search_order_my_items():
 
 @app.route('/my_items/<query>/<order>')
 def my_items_search_results(query, order):
-    """docstring"""
     page = request.args.get('page', 1, type=int)
     if order == "up_price":
         items = Item.query.order_by(Item.price.desc())\
@@ -429,7 +393,6 @@ def my_items_search_results(query, order):
 
 @app.route('/items', methods=['GET'])
 def all_items():
-    """docstring"""
     page = request.args.get('page', 1, type=int)
     items = Item.query.paginate(page=page, per_page=3)
     return render_template('items_page.html', items=items)
@@ -437,7 +400,6 @@ def all_items():
 
 @app.route('/items/order-by', methods=['POST'])
 def ordered_items():
-    """docstring"""
     value = request.form.get('thing')
     page = request.args.get('page', 1, type=int)
     if value == "name":
@@ -451,7 +413,6 @@ def ordered_items():
 
 @app.route('/search/v', methods=['POST'])
 def search_order():
-    """docstring"""
     value = request.form.get('thing')
     val = value.split(",")
     return redirect(url_for('search_results', query=val[1], order=val[0]))
@@ -459,7 +420,6 @@ def search_order():
 
 @app.route('/search', methods=['POST'])
 def search():
-    """docstring"""
     search1 = request.form["search"]
     if not search1:
         search1 = "wrong search"
@@ -469,7 +429,6 @@ def search():
 
 @app.route('/search_results/<query>/<order>')
 def search_results(query, order):
-    """docstring"""
     page = request.args.get('page', 1, type=int)
     if order == "up_price":
         items = Item.query.order_by(Item.price.desc())\
