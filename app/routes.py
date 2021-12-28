@@ -1,27 +1,13 @@
 import cloudinary
 import cloudinary.uploader
-
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import login_user, current_user, login_required, LoginManager, logout_user
-from flask_login import UserMixin
-from flask import Flask, render_template, request, redirect, flash, url_for
+from flask_login import login_user, current_user, login_required, logout_user
+from flask import render_template, request, redirect, flash, url_for
 from flask_admin import Admin, expose, AdminIndexView
 from flask_admin.contrib.sqla import ModelView
-from sqlalchemy import ForeignKey, Integer, Column, String, Boolean
-from sqlalchemy.orm import relationship, backref
 from werkzeug.security import generate_password_hash, check_password_hash
-import clodinary_config
-
-app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:passmysql@localhost/market'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost/market'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.secret_key = "test123test"
-login_manager = LoginManager()
-login_manager.login_view = 'login'
-login_manager.init_app(app)
-db = SQLAlchemy(app)
-
+from app import app, db
+from app.models import User, Item, Basket
+from app import clodinary_config, login_manager
 
 cloudinary.config(
     cloud_name=clodinary_config.cloud_name,
@@ -35,43 +21,6 @@ def load_user(user_id):
     """docstring"""
     return User.query.get(int(user_id))
 
-
-class Item(db.Model):
-    """docstring"""
-    __tablename__ = 'item'
-    __searchable__ = ['name', 'description']
-    id = Column(Integer(), primary_key=True)
-    name = Column(String(length=30), nullable=False)
-    price = Column(Integer(), nullable=False)
-    barcode = Column(String(length=12), nullable=False, unique=True)
-    description = Column(String(length=1024), nullable=False)
-    photo = Column(String(length=1024), nullable=False)
-    user_id = Column(Integer(), ForeignKey("user.id"), nullable=False)
-    user = relationship("User", back_populates="item")
-    basket_id = Column(Integer, ForeignKey('basket.id'))
-
-
-class User(db.Model, UserMixin):
-    """docstring"""
-    __tablename__ = 'user'
-    id = Column(Integer(), primary_key=True)
-    firstname = Column(String(length=30), nullable=False)
-    lastname = Column(String(length=30), nullable=False)
-    email = Column(String(length=50), nullable=False)
-    username = Column(String(length=40), nullable=False)
-    photo = Column(String(length=1024), nullable=True)
-    password = Column(String(length=1024), nullable=False)
-    admin = Column(Boolean, default=False)
-    item = relationship("Item", back_populates="user")
-
-
-class Basket(db.Model):
-    """docstring"""
-    __tablename__ = 'basket'
-    id = Column(Integer(), primary_key=True)
-    basket_user_id = Column(Integer, ForeignKey('user.id'), unique=True)
-    users = relationship("User", backref=backref("basket", uselist=False))
-    items = relationship("Item")
 
 
 class ItemView(ModelView):
@@ -389,6 +338,3 @@ def search_results(query):
     print(results)
     return render_template('search_results.html', query=query, results=results)
 
-
-if __name__ == "__main__":
-    app.run(debug=True)
