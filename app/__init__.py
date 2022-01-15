@@ -3,7 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask import Flask
 
-# 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
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:passmysql@localhost/market'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost/market'
